@@ -7,7 +7,7 @@
 #include "php.h"
 #include "ext/standard/info.h"
 #include "php_jieba.h"
-#include "jieba.h"
+#include "lib/jieba.h"
 
 /* For compatibility with older PHP versions */
 #ifndef ZEND_PARSE_PARAMETERS_NONE

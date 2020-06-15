@@ -19,6 +19,8 @@ PHP_ARG_ENABLE([jieba],
   [no])
 
 PHP_ADD_INCLUDE(include)
+PHP_ADD_LIBRARY_WITH_PATH(libjieba, ./, JIEBA_LIBADD)
+PHP_SUBST(JIEBA_LIBADD)
 
 if test "$PHP_JIEBA" != "no"; then
   dnl Write more examples of tests here...
