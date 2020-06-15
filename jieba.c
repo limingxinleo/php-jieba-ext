@@ -24,6 +24,7 @@ const char* STOP_WORDS_PATH = "/Users/limx/Applications/GitHub/limingxinleo/php-
 
 zend_class_entry *jieba_ce;
 
+PHP_METHOD(PHPJieba, __construct);
 PHP_METHOD(PHPJieba, cut);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_cut, 0, 0, 2)
@@ -31,7 +32,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_cut, 0, 0, 2)
     ZEND_ARG_INFO(0, hmm)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_contruct, 0, 0, 5)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_construct, 0, 0, 5)
     ZEND_ARG_INFO(0, dict)
     ZEND_ARG_INFO(0, hmm)
     ZEND_ARG_INFO(0, user)
@@ -40,50 +41,68 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_contruct, 0, 0, 5)
 ZEND_END_ARG_INFO()
 
 const zend_function_entry php_jieba_methods[] = {
-    PHP_ME(PHPJieba, __contruct, arginfo_php_jieba_contruct, ZEND_ACC_PUBLIC)
+    PHP_ME(PHPJieba, __construct, arginfo_php_jieba_construct, ZEND_ACC_PUBLIC)
     PHP_ME(PHPJieba, cut, arginfo_php_jieba_cut, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
-}
+};
 
 PHP_MINIT_FUNCTION(PHPJieba)
 {
-zend_class_entry ce;
-INIT_CLASS_ENTRY(ce, "PHPJieba", php_jieba_methods);
+    zend_class_entry ce;
+    INIT_CLASS_ENTRY(ce, "PHPJieba", php_jieba_methods);
 
-jieba_ce = zend_register_internal_class(&ce);
+    jieba_ce = zend_register_internal_class(&ce);
 
-zend_declare_property_null(jieba_ce, "dict", sizeof("dict") - 1, ZEND_ACC_PUBLIC);
-zend_declare_property_null(jieba_ce, "hmm", sizeof("hmm") - 1, ZEND_ACC_PUBLIC);
-zend_declare_property_null(jieba_ce, "user", sizeof("user") - 1, ZEND_ACC_PUBLIC);
-zend_declare_property_null(jieba_ce, "idf", sizeof("idf") - 1, ZEND_ACC_PUBLIC);
-zend_declare_property_null(jieba_ce, "stop_words", sizeof("stop_words") - 1, ZEND_ACC_PUBLIC);
+    zend_declare_property_string(jieba_ce, ZEND_STRL("dict"), "", ZEND_ACC_PUBLIC);
+    zend_declare_property_string(jieba_ce, ZEND_STRL("hmm"), "", ZEND_ACC_PUBLIC);
+    zend_declare_property_string(jieba_ce, ZEND_STRL("user"), "", ZEND_ACC_PUBLIC);
+    zend_declare_property_string(jieba_ce, ZEND_STRL("idf"), "", ZEND_ACC_PUBLIC);
+    zend_declare_property_string(jieba_ce, ZEND_STRL("stop_words"), "", ZEND_ACC_PUBLIC);
+
+    return SUCCESS;
 }
 
-PHP_METHOD(PHPJieba, __contruct)
+PHP_MSHUTDOWN_FUNCTION(PHPJieba)
 {
-    zend_string *dict;
-    zend_string *hmm;
-    zend_string *user;
-    zend_string *idf;
-    zend_string *stop_words;
+    return SUCCESS;
+}
+
+PHP_METHOD(PHPJieba, __construct)
+{
+    char *dict;
+    size_t dict_len;
+    char *hmm;
+    size_t hmm_len;
+    char *user;
+    size_t user_len;
+    char *idf;
+    size_t idf_len;
+    char *stop_words;
+    size_t stop_words_len;
 
     ZEND_PARSE_PARAMETERS_START(5, 5)
-        Z_PARAM_STR(dict)
-        Z_PARAM_STR(hmm)
-        Z_PARAM_STR(user)
-        Z_PARAM_STR(idf)
-        Z_PARAM_STR(stop_words)
+        Z_PARAM_STRING(dict, dict_len)
+        Z_PARAM_STRING(hmm, hmm_len)
+        Z_PARAM_STRING(user, user_len)
+        Z_PARAM_STRING(idf, idf_len)
+        Z_PARAM_STRING(stop_words, stop_words_len)
     ZEND_PARSE_PARAMETERS_END();
 
-    zend_update_property_string(jieba_ce,  getThis(), "dict", sizeof("dict") - 1, (char *)dict);
-    zend_update_property_string(jieba_ce,  getThis(), "hmm", sizeof("hmm") - 1, (char *)hmm);
-    zend_update_property_string(jieba_ce,  getThis(), "user", sizeof("user") - 1, (char *)user);
-    zend_update_property_string(jieba_ce,  getThis(), "idf", sizeof("idf") - 1, (char *)idf);
-    zend_update_property_string(jieba_ce,  getThis(), "stop_words", sizeof("stop_words") - 1, (char *)stop_words);
+    zend_update_property_string(jieba_ce,  getThis(), "dict", dict_len, dict);
+    zend_update_property_string(jieba_ce,  getThis(), "hmm", hmm_len, hmm);
+    zend_update_property_string(jieba_ce,  getThis(), "user", user_len, user);
+    zend_update_property_string(jieba_ce,  getThis(), "idf", idf_len, idf);
+    zend_update_property_string(jieba_ce,  getThis(), "stop_words", stop_words_len, stop_words);
 }
 
 PHP_METHOD(PHPJieba, cut)
 {
+    zval *dict;
+//    zend_read_property(jieba_ce, getThis(), "dict", 4, dict);
+    dict = zend_read_property(jieba_ce, getThis(), "dict", sizeof("dict")-1, 1, &dict);
+
+    php_printf("%s", (char *)dict);
+//    RETURN_STRING(Z_PARAM_STR(dict))
 //    char *love;
 //    zend_string *keyword;
 //    size_t love_len;
@@ -185,8 +204,8 @@ zend_module_entry jieba_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"jieba",					/* Extension name */
 	jieba_functions,			/* zend_function_entry */
-	NULL,							/* PHP_MINIT - Module initialization */
-	NULL,							/* PHP_MSHUTDOWN - Module shutdown */
+	PHP_MINIT(PHPJieba),
+	PHP_MSHUTDOWN(PHPJieba),
 	PHP_RINIT(jieba),			/* PHP_RINIT - Request initialization */
 	NULL,							/* PHP_RSHUTDOWN - Request shutdown */
 	PHP_MINFO(jieba),			/* PHP_MINFO - Module info */
