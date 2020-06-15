@@ -8,5 +8,11 @@ g++ -o libjieba.dylib -c -DLOGGING_LEVEL=LL_WARNING -I./include/ lib/jieba.cpp
 phpize
 ./configure
 make
+
+#linux
+g++ -o libjieba.so -fPIC -c -DLOGGING_LEVEL=LL_WARNING -I./include/ lib/jieba.cpp
+phpize 
+./configure 
+make
 ```
 
