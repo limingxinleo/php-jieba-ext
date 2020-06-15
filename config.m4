@@ -19,8 +19,6 @@ PHP_ARG_ENABLE([jieba],
   [no])
 
 PHP_ADD_INCLUDE(include)
-PHP_INSTALL_HEADERS([ext/jieba], [*.h include/*.h])
-PHP_ADD_BUILD_DIR(include)
 
 if test "$PHP_JIEBA" != "no"; then
   dnl Write more examples of tests here...
