@@ -17,8 +17,34 @@
 #endif
 
 zend_class_entry *jieba_ce;
+zend_object_handlers jieba_object_handlers;
+
+typedef struct _jieba_object {
+    Jieba* jieba;
+    zend_object std;
+}jieba_object;
+
+static inline jieba_object *jieba_object_fetch(zend_object *obj) {
+    return (jieba_object *)((char*)(obj) - XtOffsetOf(jieba_object, std));
+}
+
+static zend_object * jieba_object_create(zend_class_entry *type TSRMLS_DC)
+{
+    jieba_object *obj = (jieba_object *)ecalloc(1, sizeof(jieba_object) + zend_object_properties_size(type));
+    zend_object_std_init(&obj->std, type);
+    object_properties_init(&obj->std, type);
+    obj->std.handlers = &jieba_object_handlers;
+    return &obj->std;
+}
+
+void jieba_object_free_storage(zend_object *object)
+{
+    jieba_object *intern = jieba_object_fetch(object);
+    zend_object_std_dtor(&intern->std);
+}
 
 PHP_METHOD(PHPJieba, __construct);
+PHP_METHOD(PHPJieba, __destruct);
 PHP_METHOD(PHPJieba, cut);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_cut, 0, 0, 2)
@@ -35,7 +61,8 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_construct, 0, 0, 5)
 ZEND_END_ARG_INFO()
 
 const zend_function_entry php_jieba_methods[] = {
-    PHP_ME(PHPJieba, __construct, arginfo_php_jieba_construct, ZEND_ACC_PUBLIC)
+    PHP_ME(PHPJieba, __construct, arginfo_php_jieba_construct, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+    PHP_ME(PHPJieba, __destruct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_DTOR)
     PHP_ME(PHPJieba, cut, arginfo_php_jieba_cut, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
@@ -46,6 +73,11 @@ PHP_MINIT_FUNCTION(PHPJieba)
     INIT_CLASS_ENTRY(ce, "PHPJieba", php_jieba_methods);
 
     jieba_ce = zend_register_internal_class(&ce);
+    jieba_ce->create_object = jieba_object_create;
+    memcpy(&jieba_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    jieba_object_handlers.clone_obj = NULL;
+    jieba_object_handlers.offset = XtOffsetOf(jieba_object, std);
+    jieba_object_handlers.free_obj = jieba_object_free_storage;
 
     zend_declare_property_null(jieba_ce, "dict", sizeof("dict") - 1, ZEND_ACC_PUBLIC);
     zend_declare_property_null(jieba_ce, "hmm", sizeof("hmm") - 1, ZEND_ACC_PUBLIC);
@@ -89,6 +121,14 @@ PHP_METHOD(PHPJieba, __construct)
     zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("stop_words"), stop_words);
 
     Jieba handle = NewJieba(dict, hmm, user, idf, stop_words);
+}
+
+PHP_METHOD(PHPJieba, __destruct)
+{
+    zval *self = getThis();
+    jieba_object *obj = jieba_object_fetch(Z_OBJ_P((self)));
+    free(obj->jieba);
+    RETURN_TRUE;
 }
 
 PHP_METHOD(PHPJieba, cut)
