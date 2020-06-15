@@ -20,7 +20,7 @@ zend_class_entry *jieba_ce;
 zend_object_handlers jieba_object_handlers;
 
 typedef struct _jieba_object {
-    Jieba* jieba;
+    Jieba* handler;
     zend_object std;
 }jieba_object;
 
@@ -105,6 +105,7 @@ PHP_METHOD(PHPJieba, __construct)
     size_t idf_len;
     char *stop_words;
     size_t stop_words_len;
+    zval *self = getThis();
 
     ZEND_PARSE_PARAMETERS_START(5, 5)
         Z_PARAM_STRING(dict, dict_len)
@@ -114,30 +115,60 @@ PHP_METHOD(PHPJieba, __construct)
         Z_PARAM_STRING(stop_words, stop_words_len)
     ZEND_PARSE_PARAMETERS_END();
 
-    zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("dict"), dict);
-    zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("hmm"), hmm);
-    zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("user"), user);
-    zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("idf"), idf);
-    zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("stop_words"), stop_words);
+    zend_update_property_string(jieba_ce,  self, ZEND_STRL("dict"), dict);
+    zend_update_property_string(jieba_ce,  self, ZEND_STRL("hmm"), hmm);
+    zend_update_property_string(jieba_ce,  self, ZEND_STRL("user"), user);
+    zend_update_property_string(jieba_ce,  self, ZEND_STRL("idf"), idf);
+    zend_update_property_string(jieba_ce,  self, ZEND_STRL("stop_words"), stop_words);
 
     Jieba handle = NewJieba(dict, hmm, user, idf, stop_words);
+
+    jieba_object *obj = jieba_object_fetch(Z_OBJ_P((self)));
+    obj->handler = handle;
 }
 
 PHP_METHOD(PHPJieba, __destruct)
 {
     zval *self = getThis();
     jieba_object *obj = jieba_object_fetch(Z_OBJ_P((self)));
-    free(obj->jieba);
+    FreeJieba(obj->handler);
     RETURN_TRUE;
 }
 
 PHP_METHOD(PHPJieba, cut)
 {
-    zval *dict;
-//    zend_read_property(jieba_ce, getThis(), "dict", 4, dict);
-    dict = zend_read_property(jieba_ce, getThis(), "dict", sizeof("dict")-1, 1, &dict);
+    zval *self = getThis();
+    char *keyword;
+    size_t keyword_len;
+    bool hmm = true;
 
-    php_printf("%s", (char *)dict);
+    ZEND_PARSE_PARAMETERS_START(1, 2)
+        Z_PARAM_STRING(keyword, keyword_len)
+        Z_PARAM_OPTIONAL
+        Z_PARAM_BOOL(hmm)
+    ZEND_PARSE_PARAMETERS_END();
+
+    jieba_object *obj = jieba_object_fetch(Z_OBJ_P((self)));
+
+    CJiebaWord* words = Cut(obj->handler, keyword, keyword_len);
+    CJiebaWord* x;
+    array_init(return_value);
+    int i=0;
+    char *res;
+    for (x = words; x && x->word; x++) {
+        res = strncpy(res, x->word, x->len);
+        add_index_string(return_value, i, res);
+        i++;
+    }
+
+    FreeWords(words);
+
+    return;
+//    RETURN_NULL();
+//    array_init_size(return_value, zend_hash_num_elements(Z_ARRVAL_P(arr)));
+//    zend_hash_update(Z_ARRVAL_P(return_value), string_key, &value);
+//
+//    add_index_long(&arr, 0, 1);
 //    RETURN_STRING(Z_PARAM_STR(dict))
 //    char *love;
 //    zend_string *keyword;
