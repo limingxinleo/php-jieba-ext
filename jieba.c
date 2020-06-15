@@ -46,8 +46,13 @@ void jieba_object_free_storage(zend_object *object)
 PHP_METHOD(PHPJieba, __construct);
 PHP_METHOD(PHPJieba, __destruct);
 PHP_METHOD(PHPJieba, cut);
+PHP_METHOD(PHPJieba, insert);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_cut, 0, 0, 1)
+    ZEND_ARG_INFO(0, keyword)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_insert, 0, 0, 1)
     ZEND_ARG_INFO(0, keyword)
 ZEND_END_ARG_INFO()
 
@@ -63,6 +68,7 @@ const zend_function_entry php_jieba_methods[] = {
     PHP_ME(PHPJieba, __construct, arginfo_php_jieba_construct, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
     PHP_ME(PHPJieba, __destruct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_DTOR)
     PHP_ME(PHPJieba, cut, arginfo_php_jieba_cut, ZEND_ACC_PUBLIC)
+    PHP_ME(PHPJieba, insert, arginfo_php_jieba_insert, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
 
@@ -163,7 +169,24 @@ PHP_METHOD(PHPJieba, cut)
     return;
 }
 
-/* }}} */
+PHP_METHOD(PHPJieba, insert)
+{
+    zval *self = getThis();
+    char *keyword;
+    size_t keyword_len;
+
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+        Z_PARAM_STRING(keyword, keyword_len)
+    ZEND_PARSE_PARAMETERS_END();
+
+    jieba_object *obj = jieba_object_fetch(Z_OBJ_P((self)));
+
+    bool res = JiebaInsertUserWord(obj->handler, keyword);
+    if(res){
+        RETURN_TRUE;
+    }
+    RETURN_FALSE;
+}
 
 
 /* {{{ PHP_RINIT_FUNCTION
