@@ -47,9 +47,8 @@ PHP_METHOD(PHPJieba, __construct);
 PHP_METHOD(PHPJieba, __destruct);
 PHP_METHOD(PHPJieba, cut);
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_cut, 0, 0, 2)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_cut, 0, 0, 1)
     ZEND_ARG_INFO(0, keyword)
-    ZEND_ARG_INFO(0, hmm)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_construct, 0, 0, 5)
@@ -140,12 +139,9 @@ PHP_METHOD(PHPJieba, cut)
     zval *self = getThis();
     char *keyword;
     size_t keyword_len;
-    bool hmm = true;
 
-    ZEND_PARSE_PARAMETERS_START(1, 2)
+    ZEND_PARSE_PARAMETERS_START(1, 1)
         Z_PARAM_STRING(keyword, keyword_len)
-        Z_PARAM_OPTIONAL
-        Z_PARAM_BOOL(hmm)
     ZEND_PARSE_PARAMETERS_END();
 
     jieba_object *obj = jieba_object_fetch(Z_OBJ_P((self)));
@@ -154,9 +150,10 @@ PHP_METHOD(PHPJieba, cut)
     CJiebaWord* x;
     array_init(return_value);
     int i=0;
-    char *res;
     for (x = words; x && x->word; x++) {
+        char *res;
         res = strncpy(res, x->word, x->len);
+        res[x->len] ='\0';
         add_index_string(return_value, i, res);
         i++;
     }
@@ -164,65 +161,10 @@ PHP_METHOD(PHPJieba, cut)
     FreeWords(words);
 
     return;
-//    RETURN_NULL();
-//    array_init_size(return_value, zend_hash_num_elements(Z_ARRVAL_P(arr)));
-//    zend_hash_update(Z_ARRVAL_P(return_value), string_key, &value);
-//
-//    add_index_long(&arr, 0, 1);
-//    RETURN_STRING(Z_PARAM_STR(dict))
-//    char *love;
-//    zend_string *keyword;
-//    size_t love_len;
-//
-//    ZEND_PARSE_PARAMETERS_START(1, 2)
-//        Z_PARAM_STR(keyword)
-//        Z_PARAM_OPTIONAL
-//        Z_PARAM_ZVAL_EX(value, 0, 1)
-//    ZEND_PARSE_PARAMETERS_END();
 }
 
-
-/* {{{ void jieba_test1()
- */
-PHP_FUNCTION(jieba_test1)
-{
-//	ZEND_PARSE_PARAMETERS_NONE();
-//
-//	Jieba handle = NewJieba(DICT_PATH, HMM_PATH, USER_DICT, IDF_PATH, STOP_WORDS_PATH);
-//
-//	php_printf("%s", DICT_PATH);
-//
-//    const char* s = "南京市长江大桥";
-//    size_t len = strlen(s);
-//    CJiebaWord* words = Cut(handle, s, len);
-//    CJiebaWord* x;
-//    for (x = words; x && x->word; x++) {
-//        php_printf("%*.*s\n", x->len, x->len, x->word);
-//    }
-//
-//    FreeWords(words);
-//    FreeJieba(handle);
-}
 /* }}} */
 
-/* {{{ string jieba_test2( [ string $var ] )
- */
-PHP_FUNCTION(jieba_test2)
-{
-	char *var = "World";
-	size_t var_len = sizeof("World") - 1;
-	zend_string *retval;
-
-	ZEND_PARSE_PARAMETERS_START(0, 1)
-		Z_PARAM_OPTIONAL
-		Z_PARAM_STRING(var, var_len)
-	ZEND_PARSE_PARAMETERS_END();
-
-	retval = strpprintf(0, "Hello %s", var);
-
-	RETURN_STR(retval);
-}
-/* }}}*/
 
 /* {{{ PHP_RINIT_FUNCTION
  */
@@ -246,21 +188,9 @@ PHP_MINFO_FUNCTION(jieba)
 }
 /* }}} */
 
-/* {{{ arginfo
- */
-ZEND_BEGIN_ARG_INFO(arginfo_jieba_test1, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_jieba_test2, 0)
-	ZEND_ARG_INFO(0, str)
-ZEND_END_ARG_INFO()
-/* }}} */
-
 /* {{{ jieba_functions[]
  */
 static const zend_function_entry jieba_functions[] = {
-	PHP_FE(jieba_test1,		arginfo_jieba_test1)
-	PHP_FE(jieba_test2,		arginfo_jieba_test2)
 	PHP_FE_END
 };
 /* }}} */
