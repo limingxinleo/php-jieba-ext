@@ -1,0 +1,17 @@
+# syntax version.
+version: "3.7"
+
+volumes:
+  php-alpine-cache-v3.9:
+
+# services list.
+services:
+  # base image
+  jieba-ext:
+    image: "hyperf/hyperf:${PHP_VERSION}-alpine-v3.9-jieba"
+    build:
+      context: "./"
+      args:
+        PHP_VERSION: ${PHP_VERSION}
+    volumes:
+      - "php-alpine-cache-v3.9:/var/cache/apk"
