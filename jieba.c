@@ -16,12 +16,6 @@
 	ZEND_PARSE_PARAMETERS_END()
 #endif
 
-const char* DICT_PATH = "/Users/limx/Applications/GitHub/limingxinleo/php-jieba-ext/dict/jieba.dict.utf8";
-const char* HMM_PATH = "/Users/limx/Applications/GitHub/limingxinleo/php-jieba-ext/dict/hmm_model.utf8";
-const char* USER_DICT = "/Users/limx/Applications/GitHub/limingxinleo/php-jieba-ext/dict/user.dict.utf8";
-const char* IDF_PATH = "/Users/limx/Applications/GitHub/limingxinleo/php-jieba-ext/dict/idf.utf8";
-const char* STOP_WORDS_PATH = "/Users/limx/Applications/GitHub/limingxinleo/php-jieba-ext/dict/stop_words.utf8";
-
 zend_class_entry *jieba_ce;
 
 PHP_METHOD(PHPJieba, __construct);
@@ -52,12 +46,6 @@ PHP_MINIT_FUNCTION(PHPJieba)
     INIT_CLASS_ENTRY(ce, "PHPJieba", php_jieba_methods);
 
     jieba_ce = zend_register_internal_class(&ce);
-
-//    zend_declare_property_string(jieba_ce, ZEND_STRL("dict"), "", ZEND_ACC_PUBLIC);
-//    zend_declare_property_string(jieba_ce, ZEND_STRL("hmm"), "", ZEND_ACC_PUBLIC);
-//    zend_declare_property_string(jieba_ce, ZEND_STRL("user"), "", ZEND_ACC_PUBLIC);
-//    zend_declare_property_string(jieba_ce, ZEND_STRL("idf"), "", ZEND_ACC_PUBLIC);
-//    zend_declare_property_string(jieba_ce, ZEND_STRL("stop_words"), "", ZEND_ACC_PUBLIC);
 
     zend_declare_property_null(jieba_ce, "dict", sizeof("dict") - 1, ZEND_ACC_PUBLIC);
     zend_declare_property_null(jieba_ce, "hmm", sizeof("hmm") - 1, ZEND_ACC_PUBLIC);
@@ -99,6 +87,8 @@ PHP_METHOD(PHPJieba, __construct)
     zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("user"), user);
     zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("idf"), idf);
     zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("stop_words"), stop_words);
+
+    Jieba handle = NewJieba(dict, hmm, user, idf, stop_words);
 }
 
 PHP_METHOD(PHPJieba, cut)
