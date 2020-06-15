@@ -15,6 +15,13 @@ RUN set -ex \
     && apk update \
     && apk add autoconf dpkg-dev dpkg file g++ gcc libc-dev make php7-dev php7-pear pkgconf re2c pcre-dev zlib-dev libtool automake
 
+WORKDIR /opt/www
+
 ADD . .
 
-RUN g++ -o libjieba.so -c -DLOGGING_LEVEL=LL_WARNING -I./include/ lib/jieba.cpp
+RUN g++ -o libjieba.so -fPIC -c -DLOGGING_LEVEL=LL_WARNING -I./include/ lib/jieba.cpp \
+    && phpize \
+    && ./configure \
+    && make
+
+VOLUME /opt/www/modules

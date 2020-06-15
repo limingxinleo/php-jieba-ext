@@ -8,7 +8,7 @@ volumes:
 services:
   # base image
   jieba-ext:
-    image: "hyperf/hyperf:${PHP_VERSION}-alpine-v3.9-jieba"
+    image: "hyperf/jieba:${PHP_VERSION}"
     build:
       context: "./"
       args:
