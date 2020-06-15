@@ -19,7 +19,9 @@ WORKDIR /opt/www
 
 ADD . .
 
-RUN g++ -o libjieba.so -fPIC -c -DLOGGING_LEVEL=LL_WARNING -I./include/ lib/jieba.cpp \
+RUN ln -s /usr/bin/phpize7 /usr/local/bin/phpize \
+    && ln -s /usr/bin/php-config7 /usr/local/bin/php-config \
+    && g++ -o libjieba.so -fPIC -c -DLOGGING_LEVEL=LL_WARNING -I./include/ lib/jieba.cpp \
     && phpize \
     && ./configure \
     && make
