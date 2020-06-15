@@ -31,17 +31,17 @@ PHP_FUNCTION(jieba_test1)
 	Jieba handle = NewJieba(DICT_PATH, HMM_PATH, USER_DICT, IDF_PATH, STOP_WORDS_PATH);
 
 	php_printf("%s", DICT_PATH);
-//
-//    const char* s = "南京市长江大桥";
-//    size_t len = strlen(s);
-//    CJiebaWord* words = Cut(handle, s, len);
-//    CJiebaWord* x;
-//    for (x = words; x && x->word; x++) {
-//        php_printf("%*.*s\n", x->len, x->len, x->word);
-//    }
-//
-//    FreeWords(words);
-//    FreeJieba(handle);
+
+    const char* s = "南京市长江大桥";
+    size_t len = strlen(s);
+    CJiebaWord* words = Cut(handle, s, len);
+    CJiebaWord* x;
+    for (x = words; x && x->word; x++) {
+        php_printf("%*.*s\n", x->len, x->len, x->word);
+    }
+
+    FreeWords(words);
+    FreeJieba(handle);
 }
 /* }}} */
 
