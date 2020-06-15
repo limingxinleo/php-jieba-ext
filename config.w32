@@ -1,0 +1,7 @@
+ARG_ENABLE('jieba', 'jieba support', 'no');
+
+if (PHP_JIEBA != 'no') {
+	AC_DEFINE('HAVE_JIEBA', 1, 'jieba support enabled');
+
+	EXTENSION('jieba', 'jieba.c', null, '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1');
+}
