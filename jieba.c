@@ -53,11 +53,17 @@ PHP_MINIT_FUNCTION(PHPJieba)
 
     jieba_ce = zend_register_internal_class(&ce);
 
-    zend_declare_property_string(jieba_ce, ZEND_STRL("dict"), "", ZEND_ACC_PUBLIC);
-    zend_declare_property_string(jieba_ce, ZEND_STRL("hmm"), "", ZEND_ACC_PUBLIC);
-    zend_declare_property_string(jieba_ce, ZEND_STRL("user"), "", ZEND_ACC_PUBLIC);
-    zend_declare_property_string(jieba_ce, ZEND_STRL("idf"), "", ZEND_ACC_PUBLIC);
-    zend_declare_property_string(jieba_ce, ZEND_STRL("stop_words"), "", ZEND_ACC_PUBLIC);
+//    zend_declare_property_string(jieba_ce, ZEND_STRL("dict"), "", ZEND_ACC_PUBLIC);
+//    zend_declare_property_string(jieba_ce, ZEND_STRL("hmm"), "", ZEND_ACC_PUBLIC);
+//    zend_declare_property_string(jieba_ce, ZEND_STRL("user"), "", ZEND_ACC_PUBLIC);
+//    zend_declare_property_string(jieba_ce, ZEND_STRL("idf"), "", ZEND_ACC_PUBLIC);
+//    zend_declare_property_string(jieba_ce, ZEND_STRL("stop_words"), "", ZEND_ACC_PUBLIC);
+
+    zend_declare_property_null(jieba_ce, "dict", sizeof("dict") - 1, ZEND_ACC_PUBLIC);
+    zend_declare_property_null(jieba_ce, "hmm", sizeof("hmm") - 1, ZEND_ACC_PUBLIC);
+    zend_declare_property_null(jieba_ce, "user", sizeof("user") - 1, ZEND_ACC_PUBLIC);
+    zend_declare_property_null(jieba_ce, "idf", sizeof("idf") - 1, ZEND_ACC_PUBLIC);
+    zend_declare_property_null(jieba_ce, "stop_words", sizeof("stop_words") - 1, ZEND_ACC_PUBLIC);
 
     return SUCCESS;
 }
@@ -88,11 +94,11 @@ PHP_METHOD(PHPJieba, __construct)
         Z_PARAM_STRING(stop_words, stop_words_len)
     ZEND_PARSE_PARAMETERS_END();
 
-    zend_update_property_string(jieba_ce,  getThis(), "dict", dict_len, dict);
-    zend_update_property_string(jieba_ce,  getThis(), "hmm", hmm_len, hmm);
-    zend_update_property_string(jieba_ce,  getThis(), "user", user_len, user);
-    zend_update_property_string(jieba_ce,  getThis(), "idf", idf_len, idf);
-    zend_update_property_string(jieba_ce,  getThis(), "stop_words", stop_words_len, stop_words);
+    zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("dict"), dict);
+    zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("hmm"), hmm);
+    zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("user"), user);
+    zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("idf"), idf);
+    zend_update_property_string(jieba_ce,  getThis(), ZEND_STRL("stop_words"), stop_words);
 }
 
 PHP_METHOD(PHPJieba, cut)
@@ -119,22 +125,22 @@ PHP_METHOD(PHPJieba, cut)
  */
 PHP_FUNCTION(jieba_test1)
 {
-	ZEND_PARSE_PARAMETERS_NONE();
-
-	Jieba handle = NewJieba(DICT_PATH, HMM_PATH, USER_DICT, IDF_PATH, STOP_WORDS_PATH);
-
-	php_printf("%s", DICT_PATH);
-
-    const char* s = "南京市长江大桥";
-    size_t len = strlen(s);
-    CJiebaWord* words = Cut(handle, s, len);
-    CJiebaWord* x;
-    for (x = words; x && x->word; x++) {
-        php_printf("%*.*s\n", x->len, x->len, x->word);
-    }
-
-    FreeWords(words);
-    FreeJieba(handle);
+//	ZEND_PARSE_PARAMETERS_NONE();
+//
+//	Jieba handle = NewJieba(DICT_PATH, HMM_PATH, USER_DICT, IDF_PATH, STOP_WORDS_PATH);
+//
+//	php_printf("%s", DICT_PATH);
+//
+//    const char* s = "南京市长江大桥";
+//    size_t len = strlen(s);
+//    CJiebaWord* words = Cut(handle, s, len);
+//    CJiebaWord* x;
+//    for (x = words; x && x->word; x++) {
+//        php_printf("%*.*s\n", x->len, x->len, x->word);
+//    }
+//
+//    FreeWords(words);
+//    FreeJieba(handle);
 }
 /* }}} */
 
