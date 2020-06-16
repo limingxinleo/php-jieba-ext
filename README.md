@@ -9,3 +9,7 @@ phpize
 make
 ```
 
+## 使用
+
+使用方法详见 examples
+
