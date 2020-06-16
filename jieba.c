@@ -46,10 +46,16 @@ void jieba_object_free_storage(zend_object *object)
 PHP_METHOD(PHPJieba, __construct);
 PHP_METHOD(PHPJieba, __destruct);
 PHP_METHOD(PHPJieba, cut);
+PHP_METHOD(PHPJieba, cutWithoutTagName);
 PHP_METHOD(PHPJieba, insert);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_cut, 0, 0, 1)
     ZEND_ARG_INFO(0, keyword)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_cut_without_tag_name, 0, 0, 2)
+    ZEND_ARG_INFO(0, keyword)
+    ZEND_ARG_INFO(0, tag_name)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_insert, 0, 0, 1)
@@ -68,6 +74,7 @@ const zend_function_entry php_jieba_methods[] = {
     PHP_ME(PHPJieba, __construct, arginfo_php_jieba_construct, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
     PHP_ME(PHPJieba, __destruct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_DTOR)
     PHP_ME(PHPJieba, cut, arginfo_php_jieba_cut, ZEND_ACC_PUBLIC)
+    PHP_ME(PHPJieba, cutWithoutTagName, arginfo_php_jieba_cut_without_tag_name, ZEND_ACC_PUBLIC)
     PHP_ME(PHPJieba, insert, arginfo_php_jieba_insert, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
@@ -138,6 +145,38 @@ PHP_METHOD(PHPJieba, __destruct)
     jieba_object *obj = jieba_object_fetch(Z_OBJ_P((self)));
     FreeJieba(obj->handler);
     RETURN_TRUE;
+}
+
+PHP_METHOD(PHPJieba, cutWithoutTagName)
+{
+    zval *self = getThis();
+    char *keyword;
+    size_t keyword_len;
+    char *tag_name;
+    size_t tag_name_len;
+
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+        Z_PARAM_STRING(keyword, keyword_len)
+        Z_PARAM_STRING(tag_name, tag_name_len)
+    ZEND_PARSE_PARAMETERS_END();
+
+    jieba_object *obj = jieba_object_fetch(Z_OBJ_P((self)));
+
+    CJiebaWord* words = CutWithoutTagName(obj->handler, keyword, keyword_len, tag_name);
+    CJiebaWord* x;
+    array_init(return_value);
+    int i=0;
+    for (x = words; x && x->word; x++) {
+        char *res;
+        res = strncpy(res, x->word, x->len);
+        res[x->len] ='\0';
+        add_index_string(return_value, i, res);
+        i++;
+    }
+
+    FreeWords(words);
+
+    return;
 }
 
 PHP_METHOD(PHPJieba, cut)
