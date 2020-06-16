@@ -167,7 +167,7 @@ PHP_METHOD(PHPJieba, cutWithoutTagName)
     array_init(return_value);
     for (x = words; x && x->word; x++) {
         char res[x->len];
-        php_sprintf(res, "%.*s", x->len, x->word);
+        sprintf(res, "%.*s", x->len, x->word);
         add_next_index_string(return_value, res);
     }
 
@@ -193,7 +193,7 @@ PHP_METHOD(PHPJieba, cut)
     array_init(return_value);
     for (x = words; x && x->word; x++) {
         char res[x->len];
-        php_sprintf(res, "%.*s", x->len, x->word);
+        sprintf(res, "%.*s", x->len, x->word);
         add_next_index_string(return_value, res);
     }
 
