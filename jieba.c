@@ -155,7 +155,7 @@ PHP_METHOD(PHPJieba, cutWithoutTagName)
     char *tag_name;
     size_t tag_name_len;
 
-    ZEND_PARSE_PARAMETERS_START(1, 1)
+    ZEND_PARSE_PARAMETERS_START(2, 2)
         Z_PARAM_STRING(keyword, keyword_len)
         Z_PARAM_STRING(tag_name, tag_name_len)
     ZEND_PARSE_PARAMETERS_END();
