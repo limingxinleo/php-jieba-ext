@@ -165,13 +165,10 @@ PHP_METHOD(PHPJieba, cutWithoutTagName)
     CJiebaWord* words = CutWithoutTagName(obj->handler, keyword, keyword_len, tag_name);
     CJiebaWord* x;
     array_init(return_value);
-    int i=0;
     for (x = words; x && x->word; x++) {
-        char *res;
-        res = strncpy(res, x->word, x->len);
-        res[x->len] ='\0';
-        add_index_string(return_value, i, res);
-        i++;
+        char res[x->len];
+        php_sprintf(res, "%.*s", x->len, x->word);
+        add_next_index_string(return_value, res);
     }
 
     FreeWords(words);
@@ -194,13 +191,10 @@ PHP_METHOD(PHPJieba, cut)
     CJiebaWord* words = Cut(obj->handler, keyword, keyword_len);
     CJiebaWord* x;
     array_init(return_value);
-    int i=0;
     for (x = words; x && x->word; x++) {
-        char *res;
-        res = strncpy(res, x->word, x->len);
-        res[x->len] ='\0';
-        add_index_string(return_value, i, res);
-        i++;
+        char res[x->len];
+        php_sprintf(res, "%.*s", x->len, x->word);
+        add_next_index_string(return_value, res);
     }
 
     FreeWords(words);
