@@ -21,6 +21,8 @@ typedef struct {
 
 CJiebaWord* Cut(Jieba handle, const char* sentence, size_t len);
 
+CJiebaWord* CutAll(Jieba handle, const char* sentence, size_t len);
+
 CJiebaWord* CutWithoutTagName(Jieba, const char*, size_t, const char*);
 
 void FreeWords(CJiebaWord* words);
