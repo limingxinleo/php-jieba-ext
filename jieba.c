@@ -166,9 +166,7 @@ PHP_METHOD(PHPJieba, cutWithoutTagName)
     CJiebaWord* x;
     array_init(return_value);
     for (x = words; x && x->word; x++) {
-        char res[x->len];
-        sprintf(res, "%.*s", x->len, x->word);
-        add_next_index_string(return_value, res);
+        add_next_index_stringl(return_value, x->word, x->len);
     }
 
     FreeWords(words);
@@ -192,9 +190,7 @@ PHP_METHOD(PHPJieba, cut)
     CJiebaWord* x;
     array_init(return_value);
     for (x = words; x && x->word; x++) {
-        char res[x->len];
-        sprintf(res, "%.*s", x->len, x->word);
-        add_next_index_string(return_value, res);
+        add_next_index_stringl(return_value, x->word, x->len);
     }
 
     FreeWords(words);
