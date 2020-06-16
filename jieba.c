@@ -220,7 +220,7 @@ PHP_METHOD(PHPJieba, cutAll)
     CJiebaWord* x;
     array_init(return_value);
     for (x = words; x && x->word; x++) {
-        add_next_index_stringl(return_value, x->word, x->len);
+        add_next_index_string(return_value, x->word);
     }
 
     FreeWords(words);

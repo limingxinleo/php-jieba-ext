@@ -49,15 +49,14 @@ CJiebaWord* CutAll(Jieba handle, const char* sentence, size_t len) {
   x->CutAll(s, words);
 
   CJiebaWord* res = (CJiebaWord*)malloc(sizeof(CJiebaWord) * (words.size() + 1));
-  size_t offset = 0;
   for (size_t i = 0; i < words.size(); i++) {
-    res[i].word = sentence + offset;
-    res[i].len = words[i].size();
-    offset += res[i].len;
+     res[i].word = (char*) words[i].data();
+     res[i].len = words[i].size();
   }
-  if (offset != len) {
-    free(res);
-    return NULL;
+
+  if (words.size() == 0) {
+     free(res);
+     return NULL;
   }
   res[words.size()].word = NULL;
   res[words.size()].len = 0;
