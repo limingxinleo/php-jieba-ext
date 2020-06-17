@@ -1,5 +1,7 @@
 # 结巴分词
 
+鸣谢 [yanyiwu/cppjieba](https://github.com/yanyiwu/cppjieba)
+
 ## 安装
 
 ```
