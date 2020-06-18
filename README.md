@@ -1,5 +1,7 @@
 # 结巴分词
 
+[![Build Status](https://travis-ci.com/limingxinleo/php-jieba-ext.svg?branch=master)](https://travis-ci.com/limingxinleo/php-jieba-ext)
+
 鸣谢 [yanyiwu/cppjieba](https://github.com/yanyiwu/cppjieba)
 
 ## 安装

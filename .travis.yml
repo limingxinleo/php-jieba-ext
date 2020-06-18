@@ -25,6 +25,7 @@ install:
 
 before_script:
   - cd tests
+  - composer update
 
 script:
   - vendor/bin/phpunit test
