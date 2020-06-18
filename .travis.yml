@@ -1,0 +1,30 @@
+language: php
+
+compiler:
+  - gcc
+  - clang
+
+sudo: required
+
+php:
+  - 7.1
+  - 7.2
+  - 7.3
+  - 7.4
+  - nightly
+
+matrix:
+  allow_failures:
+    - php: nightly
+
+install:
+  - g++ -o libjieba.so -fPIC -c -DLOGGING_LEVEL=LL_WARNING -I./include/ lib/jieba.cpp
+  - phpize
+  - ./configure
+  - make
+
+before_script:
+  - cd tests
+
+script:
+  - vendor/bin/phpunit test
