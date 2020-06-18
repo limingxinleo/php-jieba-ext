@@ -24,8 +24,9 @@ install:
   - make
 
 before_script:
-  - cd tests
+  - cd $TRAVIS_BUILD_DIR/tests
   - composer update
 
 script:
+  - cd $TRAVIS_BUILD_DIR/tests
   - vendor/bin/phpunit test
