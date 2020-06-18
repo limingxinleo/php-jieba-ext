@@ -22,6 +22,7 @@ install:
   - phpize
   - ./configure
   - make
+  - make install
 
 before_script:
   - cd $TRAVIS_BUILD_DIR/tests
