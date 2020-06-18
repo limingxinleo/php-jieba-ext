@@ -5,5 +5,8 @@
     },
     "autoload-dev": {
         "Test\\": "test/"
+    },
+    "scripts": {
+        "test": "phpunit test"
     }
 }

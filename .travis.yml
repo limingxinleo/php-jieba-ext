@@ -31,4 +31,5 @@ script:
   - cd $TRAVIS_BUILD_DIR/tests
   - pwd
   - ls -al
-  - vendor/bin/phpunit test
+  - ls -al vendor/bin
+  - composer test
