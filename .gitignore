@@ -35,3 +35,4 @@ tests/*/*.sh
 build
 *.so
 vendor
+composer.lock
