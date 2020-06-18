@@ -35,4 +35,4 @@ script:
   - pwd
   - ls -al
   - ls -al vendor/bin
-  - composer test
+  - composer test -- -vvv
