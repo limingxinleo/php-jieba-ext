@@ -31,9 +31,4 @@ before_script:
 
 script:
   - cd $TRAVIS_BUILD_DIR/tests
-  - composer dump-autoload -o
-  - php --ri jieba
-  - pwd
-  - ls -al
-  - ls -al vendor/bin
   - composer test -- -vvv
