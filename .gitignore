@@ -34,3 +34,4 @@ tests/*/*.log
 tests/*/*.sh
 build
 *.so
+vendor

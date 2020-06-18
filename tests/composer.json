@@ -1,0 +1,9 @@
+{
+    "require": {
+        "phpunit/phpunit": "^7.0",
+        "friendsofphp/php-cs-fixer": "^2.14"
+    },
+    "autoload-dev": {
+        "Test\\": "test/"
+    }
+}
