@@ -25,7 +25,7 @@ install:
 
 before_script:
   - cd $TRAVIS_BUILD_DIR/tests
-  - composer update
+  - composer update -o
 
 script:
   - cd $TRAVIS_BUILD_DIR/tests

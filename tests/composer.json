@@ -4,7 +4,9 @@
         "friendsofphp/php-cs-fixer": "^2.14"
     },
     "autoload-dev": {
-        "Test\\": "test/"
+        "psr-4": {
+            "Test\\": "test/"
+        }
     },
     "scripts": {
         "test": "phpunit test"
