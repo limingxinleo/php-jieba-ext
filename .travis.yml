@@ -31,4 +31,4 @@ before_script:
 
 script:
   - cd $TRAVIS_BUILD_DIR/tests
-  - composer test -- -vvv
+  - php phpunit.php test
