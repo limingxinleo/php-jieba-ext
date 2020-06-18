@@ -23,6 +23,7 @@ install:
   - ./configure
   - make
   - make install
+  - phpenv config-add tests/ci.ini
 
 before_script:
   - cd $TRAVIS_BUILD_DIR/tests
@@ -30,6 +31,7 @@ before_script:
 
 script:
   - cd $TRAVIS_BUILD_DIR/tests
+  - php --ri jieba
   - pwd
   - ls -al
   - ls -al vendor/bin
