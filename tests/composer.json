@@ -9,7 +9,7 @@
         }
     },
     "scripts": {
-        "test": "phpunit test",
+        "test": "phpunit -c phpunit.xml",
         "cs-fix": "php-cs-fixer fix"
     }
 }

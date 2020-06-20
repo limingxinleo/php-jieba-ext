@@ -18,6 +18,7 @@ matrix:
     - php: nightly
 
 install:
+  - cd $TRAVIS_BUILD_DIR
   - g++ -o libjieba.so -fPIC -c -DLOGGING_LEVEL=LL_WARNING -I./include/ lib/jieba.cpp
   - phpize
   - ./configure
