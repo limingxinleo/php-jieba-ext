@@ -3,15 +3,18 @@ version: "3.7"
 
 volumes:
   php-alpine-cache-v3.9:
+  php-alpine-cache-v3.10:
+  php-alpine-cache-v3.11:
 
 # services list.
 services:
   # base image
   jieba-ext:
-    image: "hyperf/jieba:${PHP_VERSION}"
+    image: "hyperf/jieba:${PHP_VERSION}-v${ALPINE_VERSION}"
     build:
       context: "./"
       args:
         PHP_VERSION: ${PHP_VERSION}
+        ALPINE_VERSION: ${ALPINE_VERSION}
     volumes:
-      - "php-alpine-cache-v3.9:/var/cache/apk"
+      - "php-alpine-cache-v${ALPINE_VERSION}:/var/cache/apk"
