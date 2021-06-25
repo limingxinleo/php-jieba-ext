@@ -2,7 +2,7 @@
 
 mkdir "build"
 
-if [ -d ".env" ]; then
+if [ -f ".env" ]; then
   source ".env"
 fi
 
