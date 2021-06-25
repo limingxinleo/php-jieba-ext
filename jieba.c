@@ -75,9 +75,12 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_construct, 0, 0, 5)
     ZEND_ARG_INFO(0, stop_words)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_void, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
 const zend_function_entry php_jieba_methods[] = {
     PHP_ME(PHPJieba, __construct, arginfo_php_jieba_construct, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-    PHP_ME(PHPJieba, __destruct, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(PHPJieba, __destruct, arginfo_php_jieba_void, ZEND_ACC_PUBLIC)
     PHP_ME(PHPJieba, cut, arginfo_php_jieba_cut, ZEND_ACC_PUBLIC)
     PHP_ME(PHPJieba, cutAll, arginfo_php_jieba_cut_all, ZEND_ACC_PUBLIC)
     PHP_ME(PHPJieba, cutWithoutTagName, arginfo_php_jieba_cut_without_tag_name, ZEND_ACC_PUBLIC)
