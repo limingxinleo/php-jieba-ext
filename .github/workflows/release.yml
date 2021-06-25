@@ -7,14 +7,14 @@ on:
 name: Upload Release Asset
 
 jobs:
-  build:
-    name: Upload Release Asset
+  release:
+    name: Release
     runs-on: ubuntu-latest
+    outputs:
+      release_upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Build project # This would actually build your project, using zip for an example artifact
-        run: ./build.sh
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -22,69 +22,38 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: ${{ github.ref }}
           draft: false
           prerelease: false
-      - name: Upload PHP v7.2 Alpine v3.9
+  build:
+    name: Upload Release Asset
+    runs-on: ubuntu-latest
+    needs: release
+    strategy:
+      matrix:
+        php-version: [ '7.3', '7.4', '8.0' ]
+        alpine-version: [ '3.10', '3.11', '3.12' ]
+        exclude:
+          - php-version: '7.3'
+            alpine-version: '3.12'
+          - php-version: '8.0'
+            alpine-version: '3.10'
+      max-parallel: 8
+      fail-fast: false
+    env:
+      PHP_VERSION: ${{ matrix.php-version }}
+      ALPINE_VERSION: ${{ matrix.alpine-version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build project # This would actually build your project, using zip for an example artifact
+        run: ./build.sh
+      - name: Upload
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./build/jieba-7.2-alpine-v3.9.so
-          asset_name: jieba-7.2-alpine-v3.9.so
-          asset_content_type: application/octet-stream
-      - name: Upload PHP v7.3 Alpine v3.9
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./build/jieba-7.3-alpine-v3.9.so
-          asset_name: jieba-7.3-alpine-v3.9.so
-          asset_content_type: application/octet-stream
-      - name: Upload PHP v7.3 Alpine v3.10
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./build/jieba-7.3-alpine-v3.10.so
-          asset_name: jieba-7.3-alpine-v3.10.so
-          asset_content_type: application/octet-stream
-      - name: Upload PHP v7.3 Alpine v3.11
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./build/jieba-7.3-alpine-v3.11.so
-          asset_name: jieba-7.3-alpine-v3.11.so
-          asset_content_type: application/octet-stream
-      - name: Upload PHP v7.4 Alpine v3.9
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./build/jieba-7.4-alpine-v3.9.so
-          asset_name: jieba-7.4-alpine-v3.9.so
-          asset_content_type: application/octet-stream
-      - name: Upload PHP v7.4 Alpine v3.10
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./build/jieba-7.4-alpine-v3.10.so
-          asset_name: jieba-7.4-alpine-v3.10.so
-          asset_content_type: application/octet-stream
-      - name: Upload PHP v7.4 Alpine v3.11
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./build/jieba-7.4-alpine-v3.11.so
-          asset_name: jieba-7.4-alpine-v3.11.so
+          upload_url: ${{ needs.release.outputs.release_upload_url }}
+          asset_path: ./build/jieba-${PHP_VERSION}-alpine-v${ALPINE_VERSION}.so
+          asset_name: jieba-${PHP_VERSION}-alpine-v${ALPINE_VERSION}.so
           asset_content_type: application/octet-stream
