@@ -16,6 +16,18 @@
 	ZEND_PARSE_PARAMETERS_END()
 #endif
 
+/* PHP 8 compatibility macro {{{*/
+#if PHP_VERSION_ID < 80000
+#define JB_zend7_object zval
+#define JB_Z7_OBJ_P(object) Z_OBJ_P(object)
+#define JB_Z8_OBJ_P(zobj) zobj
+#else
+#define JB_zend7_object zend_object
+#define JB_Z7_OBJ_P(object) object
+#define JB_Z8_OBJ_P(zobj) Z_OBJ_P(zobj)
+#endif
+/*}}}*/
+
 zend_class_entry *jieba_ce;
 zend_object_handlers jieba_object_handlers;
 
@@ -79,7 +91,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_php_jieba_void, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
 const zend_function_entry php_jieba_methods[] = {
-    PHP_ME(PHPJieba, __construct, arginfo_php_jieba_construct, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+    PHP_ME(PHPJieba, __construct, arginfo_php_jieba_construct, ZEND_ACC_PUBLIC)
     PHP_ME(PHPJieba, __destruct, arginfo_php_jieba_void, ZEND_ACC_PUBLIC)
     PHP_ME(PHPJieba, cut, arginfo_php_jieba_cut, ZEND_ACC_PUBLIC)
     PHP_ME(PHPJieba, cutAll, arginfo_php_jieba_cut_all, ZEND_ACC_PUBLIC)
@@ -95,7 +107,7 @@ PHP_MINIT_FUNCTION(PHPJieba)
 
     jieba_ce = zend_register_internal_class(&ce);
     jieba_ce->create_object = jieba_object_create;
-    memcpy(&jieba_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    memcpy(&jieba_object_handlers, zend_get_std_object_handlers(), sizeof(jieba_object_handlers));
     jieba_object_handlers.clone_obj = NULL;
     jieba_object_handlers.offset = XtOffsetOf(jieba_object, std);
     jieba_object_handlers.free_obj = jieba_object_free_storage;
@@ -136,11 +148,11 @@ PHP_METHOD(PHPJieba, __construct)
         Z_PARAM_STRING(stop_words, stop_words_len)
     ZEND_PARSE_PARAMETERS_END();
 
-    zend_update_property_string(jieba_ce,  self, ZEND_STRL("dict"), dict);
-    zend_update_property_string(jieba_ce,  self, ZEND_STRL("hmm"), hmm);
-    zend_update_property_string(jieba_ce,  self, ZEND_STRL("user"), user);
-    zend_update_property_string(jieba_ce,  self, ZEND_STRL("idf"), idf);
-    zend_update_property_string(jieba_ce,  self, ZEND_STRL("stop_words"), stop_words);
+    zend_update_property_string(jieba_ce,  JB_Z8_OBJ_P(self), ZEND_STRL("dict"), dict);
+    zend_update_property_string(jieba_ce,  JB_Z8_OBJ_P(self), ZEND_STRL("hmm"), hmm);
+    zend_update_property_string(jieba_ce,  JB_Z8_OBJ_P(self), ZEND_STRL("user"), user);
+    zend_update_property_string(jieba_ce,  JB_Z8_OBJ_P(self), ZEND_STRL("idf"), idf);
+    zend_update_property_string(jieba_ce,  JB_Z8_OBJ_P(self), ZEND_STRL("stop_words"), stop_words);
 
     Jieba handle = NewJieba(dict, hmm, user, idf, stop_words);
 
