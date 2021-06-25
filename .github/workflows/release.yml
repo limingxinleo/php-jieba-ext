@@ -54,6 +54,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release.outputs.release_upload_url }}
-          asset_path: ./build/jieba-${PHP_VERSION}-alpine-v${ALPINE_VERSION}.so
-          asset_name: jieba-${PHP_VERSION}-alpine-v${ALPINE_VERSION}.so
+          asset_path: ./build/jieba-${{ matrix.php-version }}-alpine-v${{ matrix.alpine-version }}.so
+          asset_name: jieba-${{ matrix.php-version }}-alpine-v${{ matrix.alpine-version }}.so
           asset_content_type: application/octet-stream
