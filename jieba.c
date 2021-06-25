@@ -28,7 +28,7 @@ static inline jieba_object *jieba_object_fetch(zend_object *obj) {
     return (jieba_object *)((char*)(obj) - XtOffsetOf(jieba_object, std));
 }
 
-static zend_object * jieba_object_create(zend_class_entry *type TSRMLS_DC)
+static zend_object * jieba_object_create(zend_class_entry *type)
 {
     jieba_object *obj = (jieba_object *)ecalloc(1, sizeof(jieba_object) + zend_object_properties_size(type));
     zend_object_std_init(&obj->std, type);
@@ -77,7 +77,7 @@ ZEND_END_ARG_INFO()
 
 const zend_function_entry php_jieba_methods[] = {
     PHP_ME(PHPJieba, __construct, arginfo_php_jieba_construct, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-    PHP_ME(PHPJieba, __destruct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_DTOR)
+    PHP_ME(PHPJieba, __destruct, NULL, ZEND_ACC_PUBLIC)
     PHP_ME(PHPJieba, cut, arginfo_php_jieba_cut, ZEND_ACC_PUBLIC)
     PHP_ME(PHPJieba, cutAll, arginfo_php_jieba_cut_all, ZEND_ACC_PUBLIC)
     PHP_ME(PHPJieba, cutWithoutTagName, arginfo_php_jieba_cut_without_tag_name, ZEND_ACC_PUBLIC)
