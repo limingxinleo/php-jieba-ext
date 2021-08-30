@@ -7,14 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: [ '7.3', '7.4', '8.0' ]
-        alpine-version: [ '3.10', '3.11', '3.12' ]
+        php-version: [ '7.4', '8.0' ]
+        alpine-version: [ '3.10', '3.11', '3.12', '3.13', '3.14' ]
         exclude:
-          - php-version: '7.3'
-            alpine-version: '3.12'
           - php-version: '8.0'
             alpine-version: '3.10'
-      max-parallel: 8
+      max-parallel: 10
       fail-fast: false
     env:
       PHP_VERSION: ${{ matrix.php-version }}
