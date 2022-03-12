@@ -1,6 +1,6 @@
 # 结巴分词
 
-[![Build Status](https://travis-ci.com/limingxinleo/php-jieba-ext.svg?branch=master)](https://travis-ci.com/limingxinleo/php-jieba-ext)
+[![Test for Jieba](https://github.com/limingxinleo/php-jieba-ext/actions/workflows/test.yml/badge.svg)](https://github.com/limingxinleo/php-jieba-ext/actions/workflows/test.yml)
 
 鸣谢 [yanyiwu/cppjieba](https://github.com/yanyiwu/cppjieba)
 
